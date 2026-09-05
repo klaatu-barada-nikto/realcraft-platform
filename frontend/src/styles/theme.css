@@ -1,0 +1,54 @@
+:root {
+  --el-color-primary: #7cbd4b;
+  --el-color-primary-light-3: #96d26f;
+  --el-color-primary-light-5: #b0df93;
+  --el-color-primary-light-7: #cbecb8;
+  --el-color-primary-light-8: #d9f3cb;
+  --el-color-primary-light-9: #eef9e5;
+  --el-color-primary-dark-2: #639a3c;
+
+  --rc-bg: #0f1410;
+  --rc-panel: #1a2219;
+  --rc-panel-border: #2c3a2a;
+  --rc-accent: #7fe3d0;
+  --rc-text: #e8f0e6;
+  --rc-text-dim: #9db39a;
+
+  color-scheme: dark;
+}
+
+html.dark {
+  --el-bg-color: #0f1410;
+  --el-bg-color-overlay: #1a2219;
+  --el-fill-color-blank: #1a2219;
+  --el-border-color: #2c3a2a;
+  --el-text-color-primary: #e8f0e6;
+  --el-text-color-regular: #c9d6c6;
+  --el-text-color-secondary: #9db39a;
+  --el-mask-color: rgba(10, 14, 10, 0.7);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background-color: var(--rc-bg);
+  background-image:
+    linear-gradient(rgba(124, 189, 75, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 189, 75, 0.04) 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: var(--rc-text);
+}
+
+::selection {
+  background: rgba(124, 189, 75, 0.35);
+}
