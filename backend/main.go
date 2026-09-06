@@ -41,7 +41,7 @@ func main() {
 
 	router.POST("/api/generate", api.NewGenerateHandler(cfg, converter).Handle)
 	router.GET("/models/:filename", modelstore.NewModelHandler(cfg).Serve)
-	router.NoRoute(staticfs.NewStaticHandler(cfg).Serve)
+	router.NoRoute(staticfs.NewStaticHandler(config.DefaultDistDir).Serve)
 
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", cfg.ServerPort),

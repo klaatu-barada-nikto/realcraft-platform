@@ -18,8 +18,6 @@ const (
 	EnvAIModel = "REALCRAFT_AI_MODEL"
 	// EnvDataDir 数据根目录。
 	EnvDataDir = "REALCRAFT_DATA_DIR"
-	// EnvDistDir 前端产物目录。
-	EnvDistDir = "REALCRAFT_DIST_DIR"
 	// EnvMaxImageMB 单图片大小上限（MB）。
 	EnvMaxImageMB = "REALCRAFT_MAX_IMAGE_MB"
 
@@ -27,7 +25,7 @@ const (
 	DefaultServerPort = 8080
 	// DefaultDataDir 默认数据根目录。
 	DefaultDataDir = "./data"
-	// DefaultDistDir 默认前端产物目录。
+	// DefaultDistDir 前端产物目录（固定值，由镜像构建时确定，不支持环境变量覆盖）。
 	DefaultDistDir = "./dist"
 	// DefaultMaxImageMB 默认单图片大小上限（MB）。
 	DefaultMaxImageMB = 10
@@ -40,7 +38,6 @@ type Config struct {
 	AIAPIKey      string
 	AIModel       string
 	DataDir       string
-	DistDir       string
 	MaxImageBytes int64
 }
 
@@ -49,7 +46,6 @@ func Load() (*Config, error) {
 	cfg := &Config{
 		ServerPort: DefaultServerPort,
 		DataDir:    DefaultDataDir,
-		DistDir:    DefaultDistDir,
 	}
 
 	if v := strings.TrimSpace(os.Getenv(EnvServerPort)); v != "" {

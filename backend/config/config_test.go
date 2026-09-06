@@ -4,7 +4,7 @@ import "testing"
 
 func clearEnv(t *testing.T) {
 	t.Helper()
-	for _, k := range []string{EnvServerPort, EnvAIAPIURL, EnvAIAPIKey, EnvAIModel, EnvDataDir, EnvDistDir, EnvMaxImageMB} {
+	for _, k := range []string{EnvServerPort, EnvAIAPIURL, EnvAIAPIKey, EnvAIModel, EnvDataDir, EnvMaxImageMB} {
 		t.Setenv(k, "")
 	}
 }
@@ -29,9 +29,6 @@ func TestLoadDefaults(t *testing.T) {
 	}
 	if cfg.DataDir != DefaultDataDir {
 		t.Errorf("DataDir = %q, want %q", cfg.DataDir, DefaultDataDir)
-	}
-	if cfg.DistDir != DefaultDistDir {
-		t.Errorf("DistDir = %q, want %q", cfg.DistDir, DefaultDistDir)
 	}
 	if want := int64(DefaultMaxImageMB) * 1024 * 1024; cfg.MaxImageBytes != want {
 		t.Errorf("MaxImageBytes = %d, want %d", cfg.MaxImageBytes, want)
@@ -103,7 +100,6 @@ func TestLoadEnvInjection(t *testing.T) {
 	t.Setenv(EnvAIAPIKey, "sk-other")
 	t.Setenv(EnvAIModel, "other-model")
 	t.Setenv(EnvDataDir, "/tmp/rc-data")
-	t.Setenv(EnvDistDir, "/tmp/rc-dist")
 	t.Setenv(EnvMaxImageMB, "20")
 
 	cfg, err := Load()
@@ -124,9 +120,6 @@ func TestLoadEnvInjection(t *testing.T) {
 	}
 	if cfg.DataDir != "/tmp/rc-data" {
 		t.Errorf("DataDir = %q", cfg.DataDir)
-	}
-	if cfg.DistDir != "/tmp/rc-dist" {
-		t.Errorf("DistDir = %q", cfg.DistDir)
 	}
 	if want := int64(20) * 1024 * 1024; cfg.MaxImageBytes != want {
 		t.Errorf("MaxImageBytes = %d, want %d", cfg.MaxImageBytes, want)

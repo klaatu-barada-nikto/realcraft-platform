@@ -7,18 +7,16 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-
-	"github.com/realcraft/backend/config"
 )
 
 // StaticHandler 前端静态资源与 SPA 回退处理器。
 type StaticHandler struct {
-	cfg *config.Config
+	distDir string
 }
 
-// NewStaticHandler 构造静态资源处理器。
-func NewStaticHandler(cfg *config.Config) *StaticHandler {
-	return &StaticHandler{cfg: cfg}
+// NewStaticHandler 构造静态资源处理器，distDir 为前端产物目录（固定值）。
+func NewStaticHandler(distDir string) *StaticHandler {
+	return &StaticHandler{distDir: distDir}
 }
 
 // Serve 优先命中 dist 静态文件，未命中且非 /api、/models 前缀时回退 index.html。
@@ -35,13 +33,13 @@ func (h *StaticHandler) Serve(c *gin.Context) {
 		rel = "index.html"
 	}
 
-	full := filepath.Join(h.cfg.DistDir, filepath.FromSlash(rel))
+	full := filepath.Join(h.distDir, filepath.FromSlash(rel))
 	if info, err := os.Stat(full); err == nil && !info.IsDir() {
 		c.File(full)
 		return
 	}
 
-	indexPath := filepath.Join(h.cfg.DistDir, "index.html")
+	indexPath := filepath.Join(h.distDir, "index.html")
 	if _, err := os.Stat(indexPath); err != nil {
 		c.Status(http.StatusNotFound)
 		return
