@@ -5,12 +5,9 @@ node_modules/
 dist/
 frontend/dist/
 
-# Go 编译产物
-server
-server.exe
-*.exe
-*.test
-*.out
+# Java 编译产物
+target/
+*.class
 
 # 运行时数据（图片与模型文件）
 data/

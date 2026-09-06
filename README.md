@@ -1,6 +1,6 @@
 # realcraft-platform
 
-像素三视图转 Minecraft 方块的极简一体化服务（Go 后端 + Vue 前端）。
+像素三视图转 Minecraft 方块的极简一体化服务（Java 后端 + Vue 前端）。
 
 ## 项目简介
 
@@ -8,7 +8,7 @@
 
 ## 技术栈
 
-- 后端：Go 1.22+，Gin
+- 后端：Java 21，Spring Boot 4（内嵌 Tomcat）
 - 前端：Vue 3 + Element Plus + Vite（构建产物 `dist` 由后端统一托管）
 - 存储：本地文件系统（`./data/images` 存原图、`./data/models` 存模型 JSON），无数据库
 - 托管：单进程统一托管 API 路由、模型静态分发与前端 `dist` 静态资源（SPA 回退），无 Nginx
@@ -24,10 +24,11 @@
 | `REALCRAFT_AI_API_KEY` | AI 认证密钥（仅服务端使用，不会出现在日志与响应中） | 无 | 是 |
 | `REALCRAFT_AI_MODEL` | AI 视觉模型名 | 无 | 是 |
 | `REALCRAFT_DATA_DIR` | 数据根目录（下含 `images`/`models` 子目录） | `./data` | 否 |
-
-| `REALCRAFT_MAX_IMAGE_MB` | 单图片大小上限（MB），非法值回退默认 | `10` | 否 |
+| `REALCRAFT_MAX_IMAGE_MB` | 单图片大小上限（MB） | `10` | 否 |
 
 > 三个必填项（`REALCRAFT_AI_API_URL` / `REALCRAFT_AI_API_KEY` / `REALCRAFT_AI_MODEL`）缺失或为空时，服务将拒绝启动并报错。
+>
+> `dist` 目录为**固定值 `./dist`**（对齐镜像 `/app/dist`），不通过环境变量配置。
 
 配置方式（任选其一）：
 
@@ -43,13 +44,13 @@ export REALCRAFT_AI_MODEL="your-vision-model"
 ## 本地启动
 
 ```bash
-# 后端
+# 后端（需 JDK 21 + Maven）
 cd backend
-go mod tidy
+mvn -B -DskipTests package
 REALCRAFT_AI_API_URL="https://api.example.com/v1" \
 REALCRAFT_AI_API_KEY="sk-xxx" \
 REALCRAFT_AI_MODEL="your-vision-model" \
-go run .
+java -jar target/app.jar
 
 # 前端（开发模式，Vite dev server，/api 代理到后端）
 cd frontend
@@ -61,7 +62,7 @@ npm run dev   # 默认 http://localhost:5173，代理目标见 .env.development
 
 ### 镜像说明
 
-镜像基于 `alpine:3.19`，仅包含 `server` 二进制、前端 `dist` 静态产物与数据挂载点，**不含** Go/Node 构建工具链。因此镜像构建前需先在外部完成编译（本地手动编译，或由 GitHub Actions 的 `build-and-push.yml` 流水线自动完成）。
+镜像采用多阶段构建：阶段 1 用 `maven:3.9-eclipse-temurin-21` 编译打包 `app.jar`，阶段 2 用 `eclipse-temurin:21-jre-alpine` 运行，仅包含 JRE、`app.jar`、前端 `dist` 静态产物与数据挂载点，**不含** Maven/Node 构建工具链。
 
 ### 方式一：本地手动构建镜像
 
@@ -73,13 +74,7 @@ npm run build
 cd ..
 cp -r frontend/dist dist
 
-# 2. 编译后端静态二进制（Go 1.22+）
-cd backend
-go mod tidy
-CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o ../server .
-cd ..
-
-# 3. 构建镜像
+# 2. 构建镜像（多阶段，内部完成 Maven 编译）
 docker build -t realcraft-platform .
 ```
 
@@ -194,5 +189,7 @@ docker compose down      # 停止并移除容器（保留数据卷）
 
 ```bash
 cd backend
-go test ./config/... ./httpx/... ./llm/... ./api/... ./modelstore/... ./staticfs/...
+mvn -B -Dtest=com.realcraft.platform.llm.** test
+mvn -B -Dtest=com.realcraft.platform.service.** test
+mvn -B -Dtest=com.realcraft.platform.domain.**,com.realcraft.platform.common.**,com.realcraft.platform.config.** test
 ```
