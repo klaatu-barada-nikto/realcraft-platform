@@ -1,0 +1,9 @@
+realcraft:
+  google-street:
+    api-key: ${REALCRAFT_GOOGLE_STREET_API_KEY:}
+    api-url: ${REALCRAFT_GOOGLE_STREET_API_URL:https://tile.googleapis.com/v1/3dtiles/root.json}
+    max-radius: ${REALCRAFT_GOOGLE_STREET_MAX_RADIUS:500}
+    cache-dir: ${REALCRAFT_GOOGLE_STREET_CACHE_DIR:./data/street-chunks}
+    min-y: ${REALCRAFT_GOOGLE_STREET_MIN_Y:0}
+    max-y: ${REALCRAFT_GOOGLE_STREET_MAX_Y:255}
+    tile-size: ${REALCRAFT_GOOGLE_STREET_TILE_SIZE:16}
