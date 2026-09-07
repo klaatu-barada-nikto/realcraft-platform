@@ -2,10 +2,12 @@
 import { computed, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { copyText } from '../utils/clipboard'
+import VoxelPreview from './VoxelPreview.vue'
 
 const props = defineProps({
   result: { type: String, default: null },
   error: { type: String, default: '' },
+  voxels: { type: Array, default: null },
 })
 
 const copied = ref(false)
@@ -53,6 +55,7 @@ function selectCommand() {
         </el-button>
       </div>
       <p class="command-tip">在游戏内输入该指令，即可导入并构建体素模型</p>
+      <VoxelPreview v-if="voxels && voxels.length > 0" :voxels="voxels" />
     </div>
 
     <el-alert

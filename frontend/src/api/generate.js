@@ -52,4 +52,30 @@ export async function generateModel(files) {
   throw new GenerateError(message, code)
 }
 
+export async function fetchModel(jsonUrl) {
+  let pathname
+  try {
+    pathname = new URL(jsonUrl).pathname
+  } catch (e) {
+    throw new GenerateError(NETWORK_ERROR)
+  }
+
+  let response
+  try {
+    response = await fetch(pathname)
+  } catch (e) {
+    throw new GenerateError(NETWORK_ERROR)
+  }
+
+  if (!response.ok) {
+    throw new GenerateError(NETWORK_ERROR)
+  }
+
+  try {
+    return await response.json()
+  } catch (e) {
+    throw new GenerateError(NETWORK_ERROR)
+  }
+}
+
 export { FALLBACK_MESSAGES, NETWORK_ERROR }

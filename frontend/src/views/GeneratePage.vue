@@ -4,7 +4,7 @@ import GuideSection from '../components/GuideSection.vue'
 import UploadPanel from '../components/UploadPanel.vue'
 import ResultPanel from '../components/ResultPanel.vue'
 
-const { fileList, loading, result, error, submit } = useGenerate()
+const { fileList, loading, result, error, voxels, submit } = useGenerate()
 
 function handleFilesChange(files) {
   fileList.value = files
@@ -23,7 +23,7 @@ function handleFilesChange(files) {
       @change-files="handleFilesChange"
       @submit="submit"
     />
-    <ResultPanel :result="result" :error="error" />
+    <ResultPanel :result="result" :error="error" :voxels="voxels" />
   </div>
 </template>
 
